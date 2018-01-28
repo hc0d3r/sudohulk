@@ -1,6 +1,6 @@
 # Sudohulk
 
-Change sudo command
+Change sudo command, tested under bash and zsh
 
 ## supported architectures:
 
@@ -23,6 +23,19 @@ Options:
    -q quit when change a command
    -d run in background
    -k keep original command line (appending to new)
+```
+## NOTES:
+
+PID = bash or zsh pid
+
+To attach the current session use -d option, example:
+
+```
+$ ./sudohulk -qd $$ id
+running in background, pid:20899
+$ sudo ls -lah
+[sudo] senha para mmxm: 
+uid=0(root) gid=0(root) grupos=0(root)
 ```
 
 ## Demo

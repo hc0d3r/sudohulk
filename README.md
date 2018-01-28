@@ -5,7 +5,7 @@ Change sudo command, tested under bash and zsh
 ## supported architectures:
 
 - [x] x86_64
-- [ ] x86
+- [x] x86
 - [ ] arm
 
 ## How use:

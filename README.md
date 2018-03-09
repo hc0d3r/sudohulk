@@ -6,7 +6,7 @@ Change sudo command, tested under bash and zsh
 
 - [x] x86_64
 - [x] x86
-- [ ] arm
+- [x] arm
 
 ## How use:
 

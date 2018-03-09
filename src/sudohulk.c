@@ -58,7 +58,7 @@ void help(void){
 }
 
 
-int cmd_change(pid_t pid, sudohulk_options_t *opts, struct user_regs_struct *regs){
+int cmd_change(pid_t pid, sudohulk_options_t *opts, struct USER_STRUCT *regs){
 	char **new_cmd, **argv, *first_argv;
 	unsigned long new_addr, first_argv_addr = 0;
 
@@ -140,7 +140,7 @@ int ptrace_loop(sudohulk_options_t *opts){
 
 	ptrace(PTRACE_SETOPTIONS, pid, 0, ptrace_opts);
 
-	struct user_regs_struct regs;
+	struct USER_STRUCT regs;
 
 	int return_pid = pid;
 	long long_var;

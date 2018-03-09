@@ -1,6 +1,6 @@
 # Sudohulk
 
-Change sudo command, tested under bash and zsh
+This tool change sudo command, hooking the execve syscall using ptrace, tested under bash and zsh
 
 ## supported architectures:
 
